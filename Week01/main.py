@@ -25,7 +25,7 @@ class ChatBot:
        print('Listening...')
        with sr.Microphone() as mic:
            self.recognizer.adjust_for_ambient_noise(mic)
-           audio = self.recognizer.listen()
+           audio = self.recognizer.listen(mic)
            try:
                text = self.recognizer.recognize_google(audio, language='en')
                return text
@@ -41,8 +41,8 @@ class ChatBot:
 
     def run(self):
         while True:
-            #text = self.speech_to_text()
-            text = input('>')
+            text = self.speech_to_text()
+            #text = input('>')
             if text is None:
                 continue
             if text == 'quit':
