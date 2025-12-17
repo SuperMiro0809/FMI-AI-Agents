@@ -3,7 +3,6 @@ import tensorflow_datasets as tfds
 import keras
 from keras import layers
 
-# image size is 28x28, grayscale (1 channel)
 IMG_HEIGHT = 28
 IMG_WIDTH = 28
 IMG_CHANNELS = 1
@@ -11,10 +10,6 @@ NUM_CLASSES = 26  # letters a–z
 
 
 def load_emnist_dataset():
-    """
-    Load EMNIST Letters and prepare it for training.
-    """
-
     (train_data, test_data) = tfds.load(
         "emnist/letters",
         split=["train", "test"],
@@ -40,10 +35,6 @@ def load_emnist_dataset():
 
 
 def build_cnn_model():
-    """
-    Simple CNN for 28x28 grayscale letter images.
-    """
-
     model = keras.Sequential([
         layers.Conv2D(
             32, (3, 3), activation="relu",

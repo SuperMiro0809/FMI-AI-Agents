@@ -4,11 +4,22 @@ import numpy as np
 import tensorflow as tf
 
 # ------------ CONFIG ------------
+
 LATIN_MODEL_PATH = "latin_letters_cnn.h5"
-CYRILLIC_MODEL_PATH = "cyrillic_letters_cnn.keras"  # or .h5 if you re-saved
-CANVAS_SIZE = 280   # window size
-IMG_SIZE = 28       # model input size
+CYRILLIC_MODEL_PATH = "cyrillic_letters_cnn.keras"
+CANVAS_SIZE = 640
+IMG_SIZE = 28
 LINE_THICKNESS = 12
+
+CYRILLIC_LETTERS = [
+    "А", "Б", "В", "Г", "Д", "Е", "Ж", "З",
+    "И", "Й", "К", "Л", "М", "Н", "О", "П",
+    "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч",
+    "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я",
+    "а", "б", "в", "г", "д", "е", "ж", "з",
+    "и", "й"
+]
+
 # -------------------------------
 
 drawing = False
@@ -18,7 +29,6 @@ prediction_text = ""
 
 
 def mouse_draw(event, x, y, flags, param):
-    """Draw with left mouse button on grayscale canvas."""
     global drawing, last_x, last_y, canvas_gray
 
     if event == cv2.EVENT_LBUTTONDOWN:
@@ -37,12 +47,6 @@ def mouse_draw(event, x, y, flags, param):
 
 
 def preprocess_canvas_for_model(gray_canvas):
-    """
-    Super simple:
-      - resize entire 280x280 drawing area to 28x28
-      - normalize to [0, 1]
-      - add batch + channel dimensions
-    """
     resized = cv2.resize(gray_canvas, (IMG_SIZE, IMG_SIZE),
                          interpolation=cv2.INTER_AREA)
     resized = resized.astype("float32") / 255.0
@@ -51,9 +55,6 @@ def preprocess_canvas_for_model(gray_canvas):
 
 
 def load_model_and_mapping(lang: str):
-    """
-    Load appropriate model and convert class index to human-readable label.
-    """
     if lang == "en":
         if not os.path.exists(LATIN_MODEL_PATH):
             raise FileNotFoundError(f"Latin model not found: {LATIN_MODEL_PATH}")
@@ -71,8 +72,10 @@ def load_model_and_mapping(lang: str):
             raise FileNotFoundError(f"Cyrillic model not found: {CYRILLIC_MODEL_PATH}")
         model = tf.keras.models.load_model(CYRILLIC_MODEL_PATH)
 
-        # TODO: replace with real Cyrillic mapping if you have it
         def idx_to_label(i: int) -> str:
+            if 0 <= i < len(CYRILLIC_LETTERS):
+                print(CYRILLIC_LETTERS[i + 1])
+                # return CYRILLIC_LETTERS[i]
             return f"class {i}"
 
         window_title = "Draw CYRILLIC letter (P=predict, C=clear, ESC=exit)"
@@ -131,7 +134,6 @@ def main():
             print("Top-3 classes:", [(int(i), float(probs[i])) for i in top3_idx])
 
     cv2.destroyAllWindows()
-
 
 if __name__ == "__main__":
     main()
