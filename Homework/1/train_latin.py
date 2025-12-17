@@ -14,7 +14,7 @@ def load_emnist_dataset():
         "emnist/letters",
         split=["train", "test"],
         as_supervised=True,
-        batch_size=-1        # <– this is the trick
+        batch_size=-1
     )
 
     x_train, y_train = train_data

@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-# ------------ CONFIG ------------
 
 LATIN_MODEL_PATH = "latin_letters_cnn.h5"
 CYRILLIC_MODEL_PATH = "cyrillic_letters_cnn.keras"
@@ -20,7 +19,6 @@ CYRILLIC_LETTERS = [
     "и", "й"
 ]
 
-# -------------------------------
 
 drawing = False
 last_x, last_y = None, None
@@ -129,7 +127,7 @@ def main():
             conf = float(probs[class_idx] * 100.0)
             label = idx_to_label(class_idx)
             prediction_text = f"{label} ({conf:.1f}%)"
-            # debug: print top-3 in console so you see it's changing
+
             top3_idx = probs.argsort()[-3:][::-1]
             print("Top-3 classes:", [(int(i), float(probs[i])) for i in top3_idx])
 
